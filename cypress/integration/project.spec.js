@@ -13,6 +13,21 @@ function chunk(arr, len) {
   return chunks;
 }
 
+const getBorderSize = element => {
+  const px = getComputedStyle(element,null).getPropertyValue('border-left-width');
+  return parseFloat(px);
+}
+
+const getWidth = element => {
+  const px = getComputedStyle(element,null).getPropertyValue('width');
+  return parseFloat(px);
+}
+
+const getHeight = element => {
+  const px = getComputedStyle(element,null).getPropertyValue('height');
+  return parseFloat(px);
+}
+
 describe('1 - Adicione à página o título "Paleta de Cores"', () => {
   beforeEach(() => {
     cy.visit('./index.html');
@@ -58,8 +73,9 @@ describe('2 - Adicione à página uma paleta contendo quatro cores distintas', (
   it('Verifica se cada elemento da paleta de cores tem uma borda preta, sólida e com 1 pixel de largura;', () => {
     cy.get('.color')
       .each((color) => {
+        expect(getBorderSize(color[0])).to.be.closeTo(1, 0.5);
         cy.wrap(color)
-          .and('have.css', 'border', `1px solid ${BLACK}`)
+          .and('have.css', 'border-color', BLACK)
           .and('have.class', 'color');
       });
   });
@@ -303,10 +319,11 @@ describe('7 - Faça com que cada elemento do quadro de pixels possua 40 pixels d
   it('Verifica se 40 pixels é o tamanho total do elemento, incluindo seu conteúdo e excluindo a borda preta, que deve ser criada à parte.', () => {
     cy.get('.pixel')
       .each((pixel) => {
+        expect(getBorderSize(pixel[0])).to.be.closeTo(1, 0.5);
+        expect(getWidth(pixel[0])).to.be.closeTo(40, 0.5);
+        expect(getHeight(pixel[0])).to.be.closeTo(40, 0.5);
         cy.wrap(pixel)
-          .should('have.css', 'height', '40px')
-          .and('have.css', 'width', '40px')
-          .and('have.css', 'border', `1px solid ${BLACK}`);
+          .and('have.css', 'border-color', BLACK);
       });
   });
 });
