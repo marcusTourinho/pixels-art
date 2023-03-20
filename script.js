@@ -70,20 +70,40 @@ window.onload = () => {
         localStorage.setItem('pixelBoard', JSON.stringify(boardArray)); 
     }
 
-    //função que define o tamanho do board
-
     
     //função que cria os pixels
-    const createPixels = () => {
-        let boardSize = 25;
-        for (let index = 0; index < boardSize; index++) {
-            const pixelElement = document.createElement('div');
-            pixelElement.classList.add('pixel');
-            pixelBoard.appendChild(pixelElement);
-            pixelElement.style.background = 'white';
+    const createPixels = (pixels) => {
+        for (let index = 0; index < pixels; index++) {
+            const row = document.createElement('div');
+            row.classList.add('row');
+            pixelBoard.appendChild(row);
+            for (let indexj = 0; indexj < pixels; indexj++) {
+                const pixelElement = document.createElement('div');
+                pixelElement.classList.add('pixel');
+                row.appendChild(pixelElement);
+                pixelElement.style.background = 'white';
+            }
         }
     }
-    createPixels();
+    createPixels(localStorage.getItem('boardSize') || 5);
+
+    //função que define o tamanho do board
+    const variablePixels = () => {
+        let input = boardInput.value;
+        if (input) {
+            if(input < 5) {
+                input = 5;
+            } else if (input > 12) {
+                input = 12;
+            }
+            pixelBoard.innerHTML = '';
+            createPixels(input);
+            pixelElement.style.background = 'white';
+        } else {
+            alert('Board inválido!')
+        }
+    }
+    btnVQV.addEventListener('click', variablePixels);
 
     //função que retorna as cores dos pixels pelo localStorage
     const setLocalStorageBoard = () => {
