@@ -86,13 +86,7 @@ window.onload = () => {
     createPixels();
 
     //função que puxa as cores dos pixels pelo localStorage
-    const setLocalStorageBoard = () => {
-        let saveBoard = JSON.parse(localStorage.getItem('pixelBoard'));
-            for (let index = 0; index < pixelColor.length; index++) {
-                pixelColor[index].style.backgroundColor = saveBoard[index];
-            }
-    }
-    setLocalStorageBoard();
+    
 
     //função que seleciona as cores
     const selectColor = (event) => {
