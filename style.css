@@ -2,11 +2,12 @@
     margin: 0;
     padding: 0;
 }
+
 body {
     background-color: #252525;
 }
 
-#title, #main-content, #board-content {
+#title, #main-content {
     text-align: center;
     color: lavenderblush;
 }
@@ -39,7 +40,6 @@ body {
 
 #size-content {
     display: inline-block;
-    
 }
 
 #board-size {
@@ -63,16 +63,17 @@ body {
 #pixel-board {
     display: flex;
     justify-content: center;
+    flex-direction: column;
 }
 
 .row {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
 }
 
 .pixel {
     border: 1px solid black;
-    height: 40px;
-    width: 40px;
-    display: inline-block;
+    height: 40px !important;
+    width: 40px !important;
     background-color: white;
 }
