@@ -1,133 +1,140 @@
 window.onload = () => {
-    //declaração de variáveis
-    const paletteColors = document.querySelectorAll('.color');
-    const btnRandomColor = document.getElementById('button-random-color');
-    const pixelBoard = document.getElementById('pixel-board');
-    const pixelColor = document.getElementsByClassName('pixel');
-    const btnReset = document.getElementById('clear-board');
+    //declaração de variáveis que capturam os elementos.
+    const colors = document.querySelectorAll('.color');
+    const btnRandomColors = document.getElementById('button-random-color');
+    const inputValue = document.getElementById('board-size');
     const btnVQV = document.getElementById('generate-board');
-    const boardInput = document.getElementById('board-size');
-
-    //função que seta a cor preta como primeira
-    const setFirstColor = () => {
-        const firstColor = document.getElementById('color-palette').firstElementChild;
-        return firstColor.style.backgroundColor = 'black';
+    const btnClear = document.getElementById('clear-board');
+    const pixelBoard = document.getElementById('pixel-board');
+    const paletteArray = [];
+    
+    //
+    createBoard(localStorage.getItem('boardSize') || 5);
+    
+    //funções da paleta
+    const setBlack = () => {
+        colors[0].style.backgroundColor = 'black';
+        paletteArray[0] = 'black';
     }
-    setFirstColor();
-
-    //função que gera cores aleatórias
+    setBlack();
+    
     const getRandomColor = () => {
-        const hexa = '0123456789ABCDEF';
-        let color = '#';
-        while (color.length < 7) {
-            color += hexa[Math.floor(Math.random() * 16)];
+        const letters = '0123456789ABCDEF'
+        let hexa = '#';
+        while (hexa.length < 7) {
+            hexa += letters[Math.floor(Math.random() * 16)];
         }
-        return color;
+        return hexa;
     }
 
-    //função que guarda a paleta no local storage
-    const localStoragePalette = () => {
-        let paletteArray = [];
-        for (let index = 0; index < paletteColors.length; index++) {
-            paletteArray[index] = paletteColors[index].style.backgroundColor;
+    const setRandomColor = () => {
+        for (let i = 1; i < colors.length; i++) {
+            colors[i].style.backgroundColor = getRandomColor();
+            if (colors[i] === 'black' || colors[i] === colors[i - 1]) {
+                i--;
+            }
+            paletteArray[i] = colors[i].style.backgroundColor;
         }
-        localStorage.setItem('colorPalette', JSON.stringify(paletteArray));           
+        localStorage.setItem('colorPalette', JSON.stringify(paletteArray));
     }
 
-    //função que puxa as cores da paleta pelo localStorage
-    const setLocalStoragePalette = () => {
-        if (localStorage.getItem('colorPalette') === null) {
-            for (let index = 1; index < paletteColors.length; index++) {
-                paletteColors[index].style.backgroundColor = getRandomColor();
-            } 
+    const restorePalette = () => {
+        if (localStorage.getItem('colorPalette') == null) {
+            for (let i = 1; i < colors.length; i++) {
+                colors[i].style.backgroundColor = getRandomColor();
+            }
         } else {
             let savePalette = JSON.parse(localStorage.getItem('colorPalette'));
-            for (let index = 1; index < paletteColors.length; index++) {
-                paletteColors[index].style.backgroundColor = savePalette[index];
+            for (let index = 1; index < colors.length; index++) {
+                colors[index].style.backgroundColor = savePalette[index];
             }
         }
     }
-    setLocalStoragePalette();
+    restorePalette();
+    btnRandomColors.addEventListener('click', setRandomColor);
 
-    //função que seta as cores na paleta
-    const setRandomColors = () => {
-        for (let index = 1; index < paletteColors.length; index++) {
-            paletteColors[index].style.backgroundColor = getRandomColor();
-            if (paletteColors[index] === 'black' || paletteColors[index] === paletteColors[index - 1]) {
-                index--;
+    //funções do board
+    function  createBoard(size) {
+        for (let i = 0; i < size; i++) {
+            const row = document.createElement('div');
+            row.classList.add('row');
+            pixelBoard.appendChild(row);
+            for (let j = 0; j < size; j++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('pixel');
+                row.appendChild(pixel);
+                pixel.style.background = 'white';
             }
         }
-        localStoragePalette();
     }
-    btnRandomColor.addEventListener('click', setRandomColors);
 
-    //função que guarda o board no localStorage
+    const inputBoard = () => {
+        if(inputValue.value) {
+            let input = inputValue.value;
+            if (input < 5) {
+                input = 5;
+            } else if (input > 50) {
+                input = 50;
+            }
+            pixelBoard.innerHTML = '';
+            localStorage.setItem('boardSize', input);
+            createBoard(input);
+        } else {
+            alert('Board inválido!')
+        }
+    }
+    btnVQV.addEventListener('click', inputBoard);
+
+    const pixelElement = document.querySelectorAll('.pixel');
     let boardArray = [];
     const localStorageBoard = () => {
-        for (let index = 0; index < pixelColor.length; index++) {
-            boardArray[index] = pixelColor[index].style.backgroundColor;
+        for (let index = 0; index < pixelElement.length; index++) {
+            boardArray[index] = pixelElement[index].style.backgroundColor;
         }
         localStorage.setItem('pixelBoard', JSON.stringify(boardArray)); 
     }
 
-    //função que define o tamanho do board
-
-    
-    //função que cria os pixels
-    const createPixels = () => {
-        let boardSize = 25;
-        for (let index = 0; index < boardSize; index++) {
-            const pixelElement = document.createElement('div');
-            pixelElement.classList.add('pixel');
-            pixelBoard.appendChild(pixelElement);
-            pixelElement.style.background = 'white';
-        }
-    }
-    createPixels();
-
-    //função que puxa as cores dos pixels pelo localStorage
     const setLocalStorageBoard = () => {
         let saveBoard = JSON.parse(localStorage.getItem('pixelBoard'));
         if (saveBoard === null) {
-            for (let index = 0; index < pixelColor.length; index++) {
-                pixelColor[index].style.backgroundColor = 'white';
+            for (let index = 0; index < pixelElement.length; index++) {
+                pixelElement[index].style.backgroundColor = 'white';
             }
         } else {
-            for (let index = 0; index < pixelColor.length; index++) {
-                pixelColor[index].style.backgroundColor = saveBoard[index];
+            for (let index = 0; index < pixelElement.length; index++) {
+                pixelElement[index].style.backgroundColor = saveBoard[index];
             }
         }
     }
     setLocalStorageBoard();
 
-    //função que seleciona as cores
+    //funções de interação
     const selectColor = (event) => {
         const selectedColor = document.querySelector('.selected');
         selectedColor.classList.remove('selected');
         event.target.classList.add('selected');
     }
-    for (let index = 0; index < paletteColors.length; index++) {
-        paletteColors[index].addEventListener('click', selectColor);
+    for (let index = 0; index < colors.length; index++) {
+        colors[index].addEventListener('click', selectColor);
     }
 
-    //função que pinta os pixels 
     const fillPixel = (event) => {
         const selectedColor = document.querySelector('.selected');
-        if (selectedColor) {
+        if (selectColor) {
             event.target.style.backgroundColor = selectedColor.style.backgroundColor;
         }
         localStorageBoard();
     }
-    for (let index = 0; index < pixelColor.length; index++) {
-        pixelColor[index].addEventListener('click', fillPixel);
+    for (let indexj = 0; indexj < pixelElement.length; indexj++) {
+        pixelElement[indexj].addEventListener('click', fillPixel);
     }
 
-    //função do botão limpar
-    const resetBoard = () => {
-        for (let index = 0; index < pixelColor.length; index++) {
-            pixelColor[index].style.backgroundColor = 'white';
+    const clearBoard = () => {
+        for (let index = 0; index < pixelElement.length; index++) {
+            pixelElement[index].style.backgroundColor = 'white';
         }
-        localStorageBoard();
+        localStorage.removeItem('pixelBoard');
     }
-    btnReset.addEventListener('click', resetBoard);
+
+    btnClear.addEventListener('click', clearBoard);
 }

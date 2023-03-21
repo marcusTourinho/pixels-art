@@ -11,8 +11,10 @@ body {
     color: lavenderblush;
 }
 
-#color-palette {
-    margin-left: 5%;
+#top-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .color {
@@ -37,6 +39,7 @@ body {
 
 #size-content {
     display: inline-block;
+    
 }
 
 #board-size {
@@ -57,9 +60,19 @@ body {
     font-size: 1rem;
 }
 
+#pixel-board {
+    display: flex;
+    justify-content: center;
+}
+
+.row {
+    display: inline-block;
+}
+
 .pixel {
     border: 1px solid black;
     height: 40px;
     width: 40px;
     display: inline-block;
+    background-color: white;
 }
