@@ -1,5 +1,5 @@
 window.onload = () => {
-    //declaração de variáveis que capturam os elementos.
+    //declaração de variáveis
     const colors = document.querySelectorAll('.color');
     const btnRandomColors = document.getElementById('button-random-color');
     const inputValue = document.getElementById('board-size');
@@ -7,10 +7,8 @@ window.onload = () => {
     const btnClear = document.getElementById('clear-board');
     const pixelBoard = document.getElementById('pixel-board');
     const paletteArray = [];
-    
-    //
-    createBoard(localStorage.getItem('boardSize') || 5);
-    
+    const boardArray = [];
+
     //funções da paleta
     const setBlack = () => {
         colors[0].style.backgroundColor = 'black';
@@ -30,7 +28,7 @@ window.onload = () => {
     const setRandomColor = () => {
         for (let i = 1; i < colors.length; i++) {
             colors[i].style.backgroundColor = getRandomColor();
-            if (colors[i] === 'black' || colors[i] === colors[i - 1]) {
+            if (colors[i] === '#FFFFFF' || colors[i] === colors[i - 1] || colors[i] === '#000000') {
                 i--;
             }
             paletteArray[i] = colors[i].style.backgroundColor;
@@ -54,6 +52,7 @@ window.onload = () => {
     btnRandomColors.addEventListener('click', setRandomColor);
 
     //funções do board
+    createBoard(localStorage.getItem('boardSize') || 5);
     function  createBoard(size) {
         for (let i = 0; i < size; i++) {
             const row = document.createElement('div');
@@ -86,16 +85,14 @@ window.onload = () => {
     btnVQV.addEventListener('click', inputBoard);
 
     const pixelElement = document.querySelectorAll('.pixel');
-    let boardArray = [];
     const localStorageBoard = () => {
         for (let index = 0; index < pixelElement.length; index++) {
             boardArray[index] = pixelElement[index].style.backgroundColor;
         }
         localStorage.setItem('pixelBoard', JSON.stringify(boardArray)); 
     }
-
     const setLocalStorageBoard = () => {
-        let saveBoard = JSON.parse(localStorage.getItem('pixelBoard'));
+        const saveBoard = JSON.parse(localStorage.getItem('pixelBoard'));
         if (saveBoard === null) {
             for (let index = 0; index < pixelElement.length; index++) {
                 pixelElement[index].style.backgroundColor = 'white';
@@ -117,7 +114,6 @@ window.onload = () => {
     for (let index = 0; index < colors.length; index++) {
         colors[index].addEventListener('click', selectColor);
     }
-
     const fillPixel = (event) => {
         const selectedColor = document.querySelector('.selected');
         if (selectColor) {
@@ -128,13 +124,11 @@ window.onload = () => {
     for (let indexj = 0; indexj < pixelElement.length; indexj++) {
         pixelElement[indexj].addEventListener('click', fillPixel);
     }
-
     const clearBoard = () => {
         for (let index = 0; index < pixelElement.length; index++) {
             pixelElement[index].style.backgroundColor = 'white';
         }
         localStorage.removeItem('pixelBoard');
     }
-
     btnClear.addEventListener('click', clearBoard);
 }
